@@ -23,12 +23,14 @@ import top.langxecho.web.sys_role.service.SysRoleService;
 @RequestMapping("/api/role")
 @RestController
 @AllArgsConstructor
+@CrossOrigin(origins = "http://localhost:8080", allowCredentials = "true")
 public class SysRoleController {
 
     private final SysRoleService sysRoleService;
 
     // 新增
     @PostMapping
+
     @Operation(summary = "新增角色")
     public ResultVo<?> add(@RequestBody SysRole sysRole) {
         if (sysRoleService.save(sysRole)) {
