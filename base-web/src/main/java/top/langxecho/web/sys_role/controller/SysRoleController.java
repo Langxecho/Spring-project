@@ -20,6 +20,8 @@ import top.langxecho.web.sys_role.entity.RoleParm;
 import top.langxecho.web.sys_role.entity.SelectItem;
 import top.langxecho.web.sys_role.entity.SysRole;
 import top.langxecho.web.sys_role.service.SysRoleService;
+import top.langxecho.web.sys_user_role.entity.SysUserRole;
+import top.langxecho.web.sys_user_role.service.SysUserRoleService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,5 +100,6 @@ public class SysRoleController {
 
         return ResultUtils.success("查询成功", selectItems);
     }
+
 
 }
