@@ -16,6 +16,8 @@ import top.langxecho.result.ResultVo;
 import top.langxecho.utils.ResultUtils;
 import top.langxecho.web.sys_menu.entity.AssignTreeParm;
 import top.langxecho.web.sys_menu.entity.AssignTreeVo;
+import top.langxecho.web.sys_menu.entity.SysMenu;
+import top.langxecho.web.sys_menu.service.SysMenuService;
 import top.langxecho.web.sys_user.entity.*;
 import top.langxecho.web.sys_user.service.SysUserService;
 import top.langxecho.web.sys_user_role.entity.SysUserRole;
@@ -36,6 +38,7 @@ public class SysUserController {
     private final SysUserRoleService sysUserRoleService;
     private final DefaultKaptcha defaultKaptcha;
     private final JwtUtils jwtUtils;
+    private final SysMenuService sysMenuService;
     // 新增
     @PostMapping
     @Operation(summary = "新增用户")
@@ -202,5 +205,34 @@ public class SysUserController {
             return ResultUtils.success("密码修改成功!");
         }
         return ResultUtils.error("密码修改失败!");
+    }
+    @GetMapping("/getInfo")
+    @Operation(summary = "获取用户信息")
+    public ResultVo<?> getInfo(@RequestParam Long userId) {
+        // 根据id查询用户信息
+        SysUser user = sysUserService.getById(userId);
+        List<SysMenu> menuList;
+
+        // 判断是否是超级管理员
+        if (StringUtils.isNotEmpty(user.getIsAdmin()) && "1".equals(user.getIsAdmin())) {
+            // 超级管理员，直接全部查询
+            menuList = sysMenuService.list();
+        } else {
+            menuList = sysMenuService.getMenuByUserId(user.getUserId());
+        }
+
+        // 获取菜单表的code字段
+        List<String> collect = Optional.ofNullable(menuList).orElse(new ArrayList<>())
+                .stream()
+                .filter(item -> item != null && StringUtils.isNotEmpty(item.getCode()))
+                .map(SysMenu::getCode)
+                .toList();
+
+        // 设置返回值
+        UserInfo userInfo = new UserInfo();
+        userInfo.setName(user.getNickName());
+        userInfo.setUserId(user.getUserId());
+        userInfo.setPermissions(collect.toArray());
+        return ResultUtils.success("查询成功", userInfo);
     }
 }
