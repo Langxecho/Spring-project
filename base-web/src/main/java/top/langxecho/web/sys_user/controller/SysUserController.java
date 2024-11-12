@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import top.langxecho.result.ResultVo;
 import top.langxecho.utils.ResultUtils;
+import top.langxecho.web.sys_menu.entity.AssignTreeParm;
+import top.langxecho.web.sys_menu.entity.AssignTreeVo;
 import top.langxecho.web.sys_user.entity.LoginParm;
 import top.langxecho.web.sys_user.entity.LoginVo;
 import top.langxecho.web.sys_user.entity.SysUser;
@@ -174,5 +176,11 @@ public class SysUserController {
         vo.setUserId(one.getUserId());
         vo.setNickName(one.getNickName());
         return ResultUtils.success("登录成功", vo);
+    }
+    @PostMapping("/tree")
+    @Operation(summary = "查询菜单树")
+    public ResultVo<?> getAssignTree(@RequestBody AssignTreeParm parm) {
+        AssignTreeVo assignTree = sysUserService.getAssignTree(parm);
+        return ResultUtils.success("查询成功", assignTree);
     }
 }
